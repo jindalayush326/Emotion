@@ -5,6 +5,10 @@ from deepface import DeepFace
 
 app = Flask(__name__)
 
+UPLOAD_FOLDER = './uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 def extract_frames(video_path):
     frames = []
     cap = cv2.VideoCapture(video_path)
@@ -66,9 +70,16 @@ def home():
 
 @app.route('/analyze', methods=['POST'])
 def analyze_video():
-    video_path = request.json.get('video_path')
-    if not video_path:
-        return jsonify({'error': 'Video path not provided'}), 400
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file provided'}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({'error': 'No file selected for uploading'}), 400
+
+    # Save the uploaded video file to the uploads folder
+    video_path = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+    file.save(video_path)
 
     try:
         frames = extract_frames(video_path)
@@ -81,6 +92,10 @@ def analyze_video():
         return jsonify({'confidence_level': confidence_level})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+    finally:
+        # Clean up uploaded file after processing
+        if os.path.exists(video_path):
+            os.remove(video_path)
 
 @app.route('/favicon.ico')
 def favicon():
