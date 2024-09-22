@@ -1,6 +1,6 @@
 Flask
-opencv-python
-tensorflow==2.3.0
-deepface==0.0.73
+opencv-python-headless  # For using OpenCV without the GUI parts (better for deployment)
+tensorflow==2.12.0  # Use a version supported by Render
+deepface==0.0.73  # DeepFace version (works well with TensorFlow <= 2.12.0)
 numpy
 gunicorn
