@@ -1,6 +1,6 @@
 Flask
-opencv-python-headless  # Use headless version for server environments
-tensorflow==2.17.0  # Use a compatible version
-deepface==0.0.73
+opencv-python-headless
+tensorflow==2.17.0  # Stay with 2.17.0 or downgrade to 2.8.0 if issues persist
+deepface==0.0.79    # Upgrade to a later version that may support TensorFlow 2.17.0
 numpy
 gunicorn
